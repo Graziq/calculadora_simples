@@ -1,0 +1,37 @@
+# Welcome to your prefect.yaml file! [...]
+
+name: calculadora-simples
+prefect-version: 2.16.4
+
+# build section allows you to manage and build docker images
+build:
+  - prefect_docker.deployments.steps.build_docker_image:
+      requires: prefect-docker>=0.3.0
+      image_name: calculadora-image
+      dockerfile: infra/Dockerfile
+
+# push section allows you to manage if and how this project is uploaded to remote locations
+push: null
+
+# pull section allows you to provide instructions for cloning this project in remote locations
+pull:
+- prefect.deployments.steps.git_clone:
+    repository: https://github.com/Graziq/calculadora_simples.git
+    branch: main
+    access_token: null
+
+# the deployments section allows you to provide configuration for deploying flows
+deployments:
+- name: calculadora-deploy
+  version:
+  tags: []
+  description: null
+  schedule: {}
+  flow_name: fluxo_operacoes
+  entrypoint: flows/flow_versao1.py:fluxo_operacoes
+  parameters: {}
+  work_pool:
+    name: hello-pool
+    work_queue_name: null
+    job_variables: {}
+
