@@ -4,7 +4,8 @@ on: [push]
 
 jobs:
   run-flow:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+
     services:
       prefect-server:
         image: prefecthq/prefect:2.16-python3.12
@@ -27,11 +28,26 @@ jobs:
           python-version: "3.12"
 
       - name: Instalar dependências
-        run: pip install prefect==2.16.4
+        run: |
+          pip install prefect==2.16.4
+          pip install docker  # Instala o pacote docker, caso necessário
+
+      - name: Subir o Prefect Server e o Prefect Agent
+        run: |
+          docker-compose -f docker-compose.yml up -d  # Levanta os containers com base no docker-compose.yml
 
       - name: Executar Flow
         env:
-          PYTHONPATH: /github/workspace/src  # Garante imports corretos
+          PYTHONPATH: /github/workspace/src
         run: |
           cd flows
-          python flow_versao1.py
+          python flow_versao1.py  # Executa o fluxo
+
+      - name: Verificar status do Prefect Server
+        run: |
+          curl -f http://localhost:4200/api/health  # Verifica se o servidor está saudável
+
+      - name: Parar os containers Docker
+        if: always()
+        run: |
+          docker-compose -f docker-compose.yml down  # Garante que os containers sejam parados após execução

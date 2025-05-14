@@ -30,7 +30,7 @@ deployments:
   entrypoint: flows/flow_versao1.py:fluxo_operacoes
   parameters: {}
   work_pool:
-    name: default-agent-pool
+    name: hello-pool
     work_queue_name: null
     job_variables: {}
   

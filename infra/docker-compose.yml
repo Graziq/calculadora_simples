@@ -1,9 +1,10 @@
+version: "3.7"
 services:
   prefect-server:
     image: prefecthq/prefect:2.16-python3.12
     command: prefect server start --host 0.0.0.0
     ports:
-      - "4210:4200"  # Porta modificada
+      - "4200:4200"
     volumes:
       - prefect_data:/root/.prefect
     healthcheck:
@@ -20,10 +21,10 @@ services:
         condition: service_healthy
     environment:
       - PREFECT_API_URL=http://prefect-server:4200/api
-    command: prefect agent start -q default
+    command: prefect agent start -q hello-pool  # Certifique-se de usar o pool correto
     volumes:
-      - ../flows:/app/flows
-      - ../src:/app/src
+      - ./flows:/app/flows
 
 volumes:
   prefect_data:
+
