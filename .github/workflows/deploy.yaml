@@ -1,0 +1,37 @@
+name: Executar Flow Local
+
+on: [push]
+
+jobs:
+  run-flow:
+    runs-on: ubuntu-latest
+    services:
+      prefect-server:
+        image: prefecthq/prefect:2.16-python3.12
+        ports:
+          - "4200:4200"
+        env:
+          PREFECT_SERVER_API_HOST: "0.0.0.0"
+        options: >-
+          --health-cmd "curl -f http://localhost:4200/api/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: pip install prefect==2.16.4
+
+      - name: Executar Flow
+        env:
+          PYTHONPATH: /github/workspace/src  # Garante imports corretos
+        run: |
+          cd flows
+          python flow_versao1.py

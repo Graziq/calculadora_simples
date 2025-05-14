@@ -2,7 +2,7 @@ from prefect import task, flow
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
-from calculadora.operacoes import Calculadora 
+from calculadora.operacoes import Calculadora
 
 @task
 def somar(a: float, b: float):

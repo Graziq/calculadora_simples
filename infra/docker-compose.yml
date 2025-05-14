@@ -1,24 +1,30 @@
-version: '3.8'
-
 services:
   prefect-server:
     image: prefecthq/prefect:2.16-python3.12
-    command: prefect server start
+    command: prefect server start --host 0.0.0.0
     ports:
-      - "4200:4200"  # UI do Prefect
+      - "4210:4200"  # Porta modificada
     volumes:
-      - prefect_data:/root/.prefect  # Volume para persistência
+      - prefect_data:/root/.prefect
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4200/api/health"]
+      interval: 20s
+      timeout: 60s
+      start_period: 30s
+      retries: 10
 
   prefect-agent:
     image: prefecthq/prefect:2.16-python3.12
     depends_on:
-      - prefect-server
+      prefect-server:
+        condition: service_healthy
     environment:
       - PREFECT_API_URL=http://prefect-server:4200/api
     command: prefect agent start -q default
     volumes:
-      - ../flows:/app/flows  # Mapeia a pasta local `flows`
-      - ../src:/app/src      # Mapeia a pasta local `src`
+      - ../flows:/app/flows
+      - ../src:/app/src
 
 volumes:
-  prefect_data:  # Volume nomeado para persistência do Prefect
+  prefect_data:
+  
