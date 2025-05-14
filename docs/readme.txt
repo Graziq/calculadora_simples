@@ -1,0 +1,1 @@
+escopo inicial com soma e subtração
