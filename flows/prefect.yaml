@@ -27,7 +27,6 @@ deployments:
   tags: []
   description: null
   schedule: {}
-  flow_name: fluxo_operacoes
   entrypoint: flows/flow_versao1.py:fluxo_operacoes
   parameters: {}
   work_pool:
